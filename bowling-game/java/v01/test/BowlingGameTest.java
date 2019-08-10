@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.Test;
 
+import java.security.InvalidParameterException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BowlingGameTest {
 
@@ -31,4 +34,29 @@ class BowlingGameTest {
         assertEquals(2, game.getFrame());
     }
 
+    @Test
+    void WhenTwoRolls_ThenFrameIncrements() {
+        BowlingGame game = new BowlingGame();
+        game.roll(0);
+        game.roll(0);
+        assertEquals(2, game.getFrame());
+    }
+
+    @Test
+    void WhenTwoRollsExceedTen_ThenThrowsException() {
+        BowlingGame game = new BowlingGame();
+        game.roll(5);
+        assertThrows(InvalidParameterException.class, () -> game.roll(6));
+    }
+
+    @Test
+    void WhenThirdRollAfterTwoRollsWithNoSpare_ThenScoreIsTheSumOfPins() {
+        BowlingGame game = new BowlingGame();
+        int rolls = 3;
+        int pinsDown = 1;
+        for (int i = 0; i <= rolls; i++) {
+            game.roll(pinsDown);
+        }
+        assertEquals(pinsDown * rolls, game.getFrame());
+    }
 }
