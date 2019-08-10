@@ -5,6 +5,10 @@ class BowlingGame {
     private int frame = 1;
     private int rollNumber = 0;
     private int framePinsDown = 0;
+    private int spareBonusRounds = 1;
+    private int spareBonusRemainingRounds = 0;
+    private int strikeBonusRounds = 2;
+    private int strikeBonusRemainingRounds = 0;
 
     /**
      * Returns the total score for that game.
@@ -21,18 +25,37 @@ class BowlingGame {
      * @param pins number of pins knocked down
      */
     void roll(int pins) {
-        rollNumber++;
-        score += pins;
         framePinsDown += pins;
         if (framePinsDown > 10) {
             throw new InvalidParameterException();
         }
-        if (pins == 10 || rollNumber == 2) {
+
+        rollNumber++;
+        score += pins;
+
+        addBonuses(pins);
+
+        if (pins == 10) {
+            strikeBonusRemainingRounds = strikeBonusRounds;
+        }
+        if (framePinsDown == 10 || rollNumber == 2) {
+            spareBonusRemainingRounds = spareBonusRounds;
             frame++;
             rollNumber = 0;
             framePinsDown = 0;
         }
 
+    }
+
+    private void addBonuses(int pins) {
+        if (spareBonusRemainingRounds > 0) {
+            score += pins;
+            spareBonusRemainingRounds--;
+        }
+        if (strikeBonusRemainingRounds > 0) {
+            score += pins;
+            strikeBonusRemainingRounds--;
+        }
     }
 
     int getFrame() {

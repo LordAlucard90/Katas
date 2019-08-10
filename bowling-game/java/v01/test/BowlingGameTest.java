@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BowlingGameTest {
+    private int totalPins = 10;
+    private int totalFrames = 10;
 
     @Test
     void WhenGameStarts_ThenScoreIsNull() {
@@ -59,4 +61,35 @@ class BowlingGameTest {
         }
         assertEquals(pinsDown * rolls, game.getFrame());
     }
+
+    @Test
+    void WhenThirdRollAfterSpare_ThenScoreIsTenPlusDoubleLastRoll() {
+        BowlingGame game = new BowlingGame();
+        int lastRollPinsDown = 5;
+        game.roll(4);
+        game.roll(6);
+        game.roll(lastRollPinsDown);
+        assertEquals(totalPins + 2 * lastRollPinsDown, game.score());
+    }
+
+    @Test
+    void WhenThirdRollAfterSpareIsNull_ThenScoreIsTen() {
+        BowlingGame game = new BowlingGame();
+        game.roll(4);
+        game.roll(6);
+        game.roll(0);
+        assertEquals(totalPins, game.score());
+    }
+
+    @Test
+    void WhenThirdRollAfterStrikeAndSecondRollIsNull_ThenScoreIsTenPlusDoubleLastRoll() {
+        BowlingGame game = new BowlingGame();
+        int lastRollPinsDown = 5;
+        game.roll(totalPins);
+        game.roll(0);
+        game.roll(lastRollPinsDown);
+        assertEquals(totalPins + 2 * lastRollPinsDown, game.score());
+    }
+
+
 }
