@@ -1,5 +1,6 @@
 class BowlingGame {
     private int score;
+    private int frame = 1;
 
     /**
      * Returns the total score for that game.
@@ -17,9 +18,13 @@ class BowlingGame {
      */
     void roll(int pins) {
         score = pins;
+        if (pins == 10) {
+            frame++;
+        }
+
     }
 
-    int round() {
-        return 1;
+    int getFrame() {
+        return frame;
     }
 }

@@ -11,9 +11,9 @@ class BowlingGameTest {
     }
 
     @Test
-    void WhenGameStarts_ThenRoundIsFirst() {
+    void WhenGameStarts_ThenFrameIsFirst() {
         BowlingGame game = new BowlingGame();
-        assertEquals(1, game.round());
+        assertEquals(1, game.getFrame());
     }
 
     @Test
@@ -22,6 +22,13 @@ class BowlingGameTest {
         int pinsDown = 1;
         game.roll(pinsDown);
         assertEquals(pinsDown, game.score());
+    }
+
+    @Test
+    void WhenOnFirstRollAllPinsDown_ThenFrameIncrements() {
+        BowlingGame game = new BowlingGame();
+        game.roll(10);
+        assertEquals(2, game.getFrame());
     }
 
 }
