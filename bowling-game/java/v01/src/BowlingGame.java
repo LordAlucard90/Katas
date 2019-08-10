@@ -19,4 +19,7 @@ class BowlingGame {
         score = pins;
     }
 
+    int round() {
+        return 1;
+    }
 }

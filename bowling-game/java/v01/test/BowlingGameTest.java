@@ -11,12 +11,17 @@ class BowlingGameTest {
     }
 
     @Test
+    void WhenGameStarts_ThenRoundIsFirst() {
+        BowlingGame game = new BowlingGame();
+        assertEquals(1, game.round());
+    }
+
+    @Test
     void WhenFirstRoll_ThenScoreEqualToPinsDown() {
         BowlingGame game = new BowlingGame();
         int pinsDown = 1;
         game.roll(pinsDown);
         assertEquals(pinsDown, game.score());
     }
-
 
 }
