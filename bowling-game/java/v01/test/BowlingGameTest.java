@@ -2,8 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import java.security.InvalidParameterException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BowlingGameTest {
     private int totalPins = 10;
@@ -56,10 +55,10 @@ class BowlingGameTest {
         BowlingGame game = new BowlingGame();
         int rolls = 3;
         int pinsDown = 1;
-        for (int i = 0; i <= rolls; i++) {
+        for (int i = 0; i < rolls; i++) {
             game.roll(pinsDown);
         }
-        assertEquals(pinsDown * rolls, game.getFrame());
+        assertEquals(pinsDown * rolls, game.score());
     }
 
     @Test
@@ -89,6 +88,73 @@ class BowlingGameTest {
         game.roll(0);
         game.roll(lastRollPinsDown);
         assertEquals(totalPins + 2 * lastRollPinsDown, game.score());
+    }
+
+    @Test
+    void WhenLastFrameSpare_ThenExtraRollInLastFrame() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames - 1; f++) {
+            game.roll(0);
+            game.roll(0);
+        }
+        assertEquals(totalFrames, game.getFrame());
+        game.roll(5);
+        game.roll(5);
+        assertEquals(totalFrames, game.getFrame());
+        assertDoesNotThrow(() -> game.roll(6));
+    }
+
+    @Test
+    void WhenLastFrameStrike_ThenExtraRollInLastFrame() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames - 1; f++) {
+            game.roll(0);
+            game.roll(0);
+        }
+        assertEquals(totalFrames, game.getFrame());
+        game.roll(totalPins);
+        assertEquals(totalFrames, game.getFrame());
+        assertDoesNotThrow(() -> game.roll(6));
+    }
+
+    @Test
+    void WhenLastFrameSpare_ThenOnlyOneExtraRoll() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames; f++) {
+            game.roll(5);
+            game.roll(5);
+        }
+        game.roll(5);
+        assertThrows(InvalidParameterException.class, () -> game.roll(6));
+    }
+
+    @Test
+    void WhenLastFrameStrike_ThenOnlyOneExtraRoll() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames; f++) {
+            game.roll(10);
+        }
+        game.roll(10);
+        assertThrows(InvalidParameterException.class, () -> game.roll(6));
+    }
+
+    @Test
+    void WhenLastFrameNoSpareOrStrike_ThenNoExtraRoll() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames; f++) {
+            game.roll(0);
+            game.roll(0);
+        }
+        assertThrows(InvalidParameterException.class, () -> game.roll(6));
+    }
+
+    @Test
+    void WhenPerfectGame_ThenScoreIs300() {
+        BowlingGame game = new BowlingGame();
+        for (int f = 0; f < totalFrames + 1; f++) {
+            game.roll(10);
+        }
+        assertEquals(300, game.score());
     }
 
 

@@ -1,7 +1,9 @@
 import java.security.InvalidParameterException;
 
 class BowlingGame {
+    private int totalPins = 10;
     private int score;
+    private int totalFrames = 10;
     private int frame = 1;
     private int rollNumber = 0;
     private int framePinsDown = 0;
@@ -26,25 +28,42 @@ class BowlingGame {
      */
     void roll(int pins) {
         framePinsDown += pins;
-        if (framePinsDown > 10) {
+        if (framePinsDown > totalPins || frame > totalFrames) {
             throw new InvalidParameterException();
         }
 
         rollNumber++;
-        score += pins;
+
+        // the last extra roll is counted once
+        if (rollNumber <= 2) {
+            score += pins;
+        }
 
         addBonuses(pins);
 
-        if (pins == 10) {
-            strikeBonusRemainingRounds = strikeBonusRounds;
-        }
-        if (framePinsDown == 10 || rollNumber == 2) {
-            spareBonusRemainingRounds = spareBonusRounds;
-            frame++;
-            rollNumber = 0;
+        if (framePinsDown == totalPins || rollNumber > 1) {
+            checkBonuses(pins);
+
+            // if is spare or strike in the last frame play another time
+            if (frame != totalFrames || framePinsDown != totalPins || rollNumber > 2) {
+                frame++;
+                rollNumber = 0;
+            }
             framePinsDown = 0;
         }
 
+    }
+
+    private void checkBonuses(int pins) {
+        if (pins == totalPins) {
+            strikeBonusRemainingRounds = strikeBonusRounds;
+            // last frame accommodation
+            rollNumber++;
+        }
+
+        if (framePinsDown == totalPins) {
+            spareBonusRemainingRounds = spareBonusRounds;
+        }
     }
 
     private void addBonuses(int pins) {
@@ -52,6 +71,7 @@ class BowlingGame {
             score += pins;
             spareBonusRemainingRounds--;
         }
+
         if (strikeBonusRemainingRounds > 0) {
             score += pins;
             strikeBonusRemainingRounds--;
